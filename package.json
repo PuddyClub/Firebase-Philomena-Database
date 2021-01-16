@@ -1,0 +1,28 @@
+{
+  "name": "@tinypudding/firebase-derpibooru-database",
+  "version": "1.0.9",
+  "description": "Script to synchronize data from Derpibooru with Firebase Database Realtime.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TinyPudding/Firebase-Derpibooru-Database.git"
+  },
+  "keywords": [
+    "derpibooru"
+  ],
+  "author": "Yasmin Seidel (JasminDreasond)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TinyPudding/Firebase-Derpibooru-Database/issues"
+  },
+  "homepage": "https://github.com/TinyPudding/Firebase-Derpibooru-Database#readme",
+  "dependencies": {
+    "@tinypudding/firebase-booru-database": "^1.3.2",
+    "for-promise": "^1.2.7",
+    "lodash": "^4.17.20",
+    "node-fetch": "^2.6.1"
+  }
+}
