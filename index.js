@@ -4,6 +4,16 @@ module.exports = function (data) {
     const _ = require('lodash');
 
     // Config
+    const booruCfg = _.defaultsDeep({}, data.config, {
+        version: 1,
+        id: '',
+        name: '',
+        url: '',
+        tagListVar: 'tags',
+        idVar: 'id',
+    });
+
+    // Config
     const tinyCfg = _.defaultsDeep({}, data.config, {
         key: '',
         timeout: 10,
@@ -14,10 +24,10 @@ module.exports = function (data) {
     });
 
     // Config Key
-    if(
+    if (
         (typeof tinyCfg.key === "string" && tinyCfg.key.length > 0) ||
         (typeof tinyCfg.key === "number" && !isNaN(tinyCfg.key))
-    ){
+    ) {
         tinyCfg.key = '&key=' + encodeURIComponent(tinyCfg.key);
     } else {
         tinyCfg.key = '';
@@ -27,7 +37,7 @@ module.exports = function (data) {
     const booru_settings = _.defaultsDeep({}, data.module, {
 
         // ID
-        id: 'derpibooru',
+        id: booruCfg.id,
 
         // DB
         db: {
@@ -54,11 +64,11 @@ module.exports = function (data) {
 
     // Main Config
     const mainConfig = {
-        name: 'Derpibooru',
-        url: 'https://derpibooru.org',
-        module_name: 'derpibooru_http_api_v1',
-        tagListVar: 'tags',
-        idVar: 'id',
+        name: booruCfg.name,
+        url: booruCfg.url,
+        module_name: booruCfg.id + '_http_api_v' + booruCfg.version,
+        tagListVar: booruCfg.tagListVar,
+        idVar: booruCfg.idVar,
     };
 
     // Config Fusion
@@ -69,8 +79,8 @@ module.exports = function (data) {
     // Booru
     const booruDatabase = require('@tinypudding/firebase-booru-database');
 
-    // Derpibooru
-    const derpibooru = new booruDatabase(booru_settings);
+    // Philomena
+    const philomena = new booruDatabase(booru_settings);
 
     // Prepare Module
     const items_to_use = {};
@@ -83,7 +93,7 @@ module.exports = function (data) {
             try {
 
                 // Get Errors
-                const errorResult = await derpibooru.checkError();
+                const errorResult = await philomena.checkError();
 
                 // Check Timeout
                 if (!errorResult.error) {
@@ -101,7 +111,7 @@ module.exports = function (data) {
                         const page = item + 1;
 
                         // Response
-                        fetch(`${mainConfig.url}/api/v1/json/search/images?q=${encodeURIComponent(tinyCfg.query)}&filter_id=${encodeURIComponent(tinyCfg.filter_id)}&page=${String(page)}&per_page=${encodeURIComponent(tinyCfg.per_page)}${tinyCfg.key}`).then(response => {
+                        fetch(`${mainConfig.url}/api/v${booruCfg.version}/json/search/images?q=${encodeURIComponent(tinyCfg.query)}&filter_id=${encodeURIComponent(tinyCfg.filter_id)}&page=${String(page)}&per_page=${encodeURIComponent(tinyCfg.per_page)}${tinyCfg.key}`).then(response => {
 
                             // Search Items
                             response.json().then(result => {
@@ -140,8 +150,8 @@ module.exports = function (data) {
 
                     // Exist Data
                     if (Array.isArray(image_list) && image_list.length > 0 && typeof total_images === "number" && total_images > 0) {
-                        await derpibooru.getDBItem('itemTotal').set(total_images)
-                        errorResult.data = await derpibooru.updateDatabase(image_list);
+                        await philomena.getDBItem('itemTotal').set(total_images)
+                        errorResult.data = await philomena.updateDatabase(image_list);
                     }
 
                 }
@@ -149,7 +159,7 @@ module.exports = function (data) {
                 // Nope
                 else {
                     errorResult.data.timeout--;
-                    await derpibooru.setErrorTimeout(errorResult.data.timeout);
+                    await philomena.setErrorTimeout(errorResult.data.timeout);
                 }
 
                 // Send Result
@@ -162,7 +172,7 @@ module.exports = function (data) {
 
                 // Send Error
                 try {
-                    await derpibooru.error({ message: err.message, timeout: tinyCfg.timeout });
+                    await philomena.error({ message: err.message, timeout: tinyCfg.timeout });
                     reject(err);
                 }
 
@@ -181,7 +191,7 @@ module.exports = function (data) {
 
     // Get Object
     items_to_use.getRoot = function () {
-        return derpibooru;
+        return philomena;
     };
 
     // Complete
