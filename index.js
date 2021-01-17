@@ -14,6 +14,7 @@ module.exports = function (data) {
             url: '',
             tagListVar: 'tags',
             idVar: 'id',
+            filter_id: 0
         });
 
         // Config
@@ -22,7 +23,7 @@ module.exports = function (data) {
             timeout: 10,
             pages: 1,
             query: '*',
-            filter_id: 56027,
+            filter_id: booruCfg.filter_id,
             per_page: 50
         });
 
