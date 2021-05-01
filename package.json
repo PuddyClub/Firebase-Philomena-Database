@@ -1,6 +1,6 @@
 {
   "name": "@tinypudding/firebase-philomena-database",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Script to synchronize data from websites powered by Philomena in Firebase Database Realtime.",
   "main": "index.js",
   "scripts": {
